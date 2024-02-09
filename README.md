@@ -17,7 +17,7 @@ To set up this project locally, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/flask-proxy-fetcher-checker.git
+git clone https://github.com/flaryx32/ProxyScrapeScraper.git
 ```
 
 2. Navigate to the project directory:
