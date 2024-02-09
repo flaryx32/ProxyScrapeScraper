@@ -39,9 +39,9 @@
             <option value="transparent">Transparent</option>
         </select>
         <button type="submit">Fetch Proxies</button>
-        <button id="refresh">Refresh Current Proxies</button>
+        
     </form>
-
+    <button onclick="window.location.href='/refresh'">Refresh Current Proxies</button>
     <button onclick="window.location.href='/download_proxies'">Download Proxies</button>
 
     <table>
@@ -59,9 +59,9 @@
                 <td>{{ proxy['ip'] }}</td>
                 <td class="{{ 'unknown' if proxy['country'] == 'Failed' else '' }}">{{ proxy['country'] }}</td>
                 <td class="{{ 'unknown' if proxy['city'] == 'Failed' else '' }}">{{ proxy['city'] }}</td>
-                <td class="{% if proxy['speed'] is none %}unknown{% elif proxy['speed']|default(0)|float > 0.9 %}speed-high{% else %}speed-low{% endif %}">
+                <td class="{% if proxy['speed'] == 'fail' %}fail{% elif proxy['speed'] is none %}unknown{% elif proxy['speed']|default(0)|float >  0.9 %}speed-high{% else %}speed-low{% endif %}">
                     {{ proxy['speed']|default('Unknown', true) }}
-                </td>            
+                </td>         
             </tr>
             {% else %}
             <tr><td colspan="4">No proxies found.</td></tr>
