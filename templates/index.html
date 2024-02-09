@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="https://cdn.proxyscrape.com/cdn-cgi/image/fit=crop,quality=80,format=auto,onerror=redirect,metadata=none/img/62d6c73fcf0765d6551b790f.png"/>
+    <meta charset="UTF-8">
+    <title>Proxy List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Proxy List</h1>
+
+    <form action="/fetch_new" method="get">
+        <label for="protocol">Protocol:</label>
+        <select name="protocol" id="protocol">
+            <option value="http">HTTP</option>
+            <option value="socks4">SOCKS4</option>
+            <option value="socks5">SOCKS5</option>
+            <option value="all" selected>All</option>
+        </select>
+
+        <label for="timeout">Timeout (ms):</label>
+        <input type="text" name="timeout" id="timeout" placeholder="Timeout (ms)" value="10000">
+
+        <label for="country">Country (ISO code):</label>
+        <input type="text" name="country" id="country" placeholder="Country (ISO code)" value="all">
+
+        <label for="ssl">SSL:</label>
+        <select name="ssl" id="ssl">
+            <option value="all" selected>All</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="anonymity">Anonymity:</label>
+        <select name="anonymity" id="anonymity">
+            <option value="all" selected>All</option>
+            <option value="elite">Elite</option>
+            <option value="anonymous">Anonymous</option>
+            <option value="transparent">Transparent</option>
+        </select>
+
+        <button type="submit">Fetch Proxies</button>
+    </form>
+
+    <button onclick="window.location.href='/download_proxies'">Download Proxies</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>Country</th>
+                <th>City</th>
+                <th>Speed</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for proxy in proxies %}
+            <tr>
+                <td>{{ proxy['ip'] }}</td>
+                <td class="{{ 'unknown' if proxy['country'] == 'Failed' else '' }}">{{ proxy['country'] }}</td>
+                <td class="{{ 'unknown' if proxy['city'] == 'Failed' else '' }}">{{ proxy['city'] }}</td>
+                <td class="{% if proxy['speed'] is none %}unknown{% elif proxy['speed']|default(0)|float > 0.9 %}speed-high{% else %}speed-low{% endif %}">
+                    {{ proxy['speed']|default('Unknown', true) }}
+                </td>            
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No proxies found.</td></tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+</body>
+</html>
