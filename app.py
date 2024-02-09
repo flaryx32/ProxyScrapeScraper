@@ -112,15 +112,29 @@ def index():
 @app.route('/refresh', methods=['GET'])
 def refresh():
     proxies = load_proxies()
+    updated_proxies = []
+
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_proxy = {executor.submit(check_proxy_speed, proxy['ip']): proxy for proxy in proxies}
-        results = []
+
         for future in as_completed(future_to_proxy):
+            original_proxy = future_to_proxy[future]
             result = future.result()
+
+            updated_proxy = original_proxy.copy()  # Copy original proxy details
             if result is not None:
-                results.append(result)
-    save_proxies(results)
+                # Speed check successful, update the speed
+                updated_proxy['speed'] = result['speed']
+            else:
+                # Speed check failed, mark the speed as "fail"
+                updated_proxy['speed'] = "fail"
+                
+            updated_proxies.append(updated_proxy)
+
+    save_proxies(updated_proxies)
     return redirect(url_for('index'))
+
+
 
 
 
